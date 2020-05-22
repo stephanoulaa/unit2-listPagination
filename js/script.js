@@ -3,9 +3,8 @@ Treehouse Techdegree:
 FSJS project 2 - List Filter and Pagination
 ******************************************/
 
-//get references to DOM elements:
+//define variables for showPage() function:
 const studentList = document.getElementsByClassName('student-item cf');
-const studentItem = studentList.children;
 const numItems = 10;
 
 
@@ -16,7 +15,7 @@ function showPage(list, page) {
   let firstIndex = (page * numItems) - numItems;
   let lastIndex  = page * numItems;
 
-  for (let i = 0; i < list.length; i++) {
+  for (let i=0; i<list.length; i+=1) {
       if (i >= firstIndex && i < lastIndex) {
         list[i].style.display = '';
       }
@@ -25,35 +24,24 @@ function showPage(list, page) {
         list[i].style.display = 'none';
       }
   }
-};
-showPage(studentList, 1); // call above function since pg 1 is default page
+}; // end of showPage() funct
 
-
-
-// define references to DOM elements: 
+// define vars needed for creatLinks() function: 
 const pageDiv = document.querySelector('.page');
 const containerDiv = document.createElement('div');
 containerDiv.className = ('pagination');
-
-
-// reset() function bellow borrowed from GitHub user brunomarchir
-// github.com/brunomarchir/List-Pagination-And-Filtering/
-// "function to reset pagination for a different list"
-const reset = () => {
-   containerDiv.innerHTML = '';
-}
-
 
 
 // create/add <a> tags to names to create pagination section
 // use same list parameter as showPage() function
 function createLinks(list) {
 
-  //gets the number of pages needed (using Math.ceil b/c this rounds output up to next int)
-  let numPages = Math.ceil(list.length/numItems);
     
   // create new unordered list to hold links to pages
   let ul = document.createElement('ul');
+    
+  // using Math.ceil b/c this rounds num up to next int
+  let numPages = Math.ceil(list.length/numItems);
 
   // page div should hold the pagination div which should hold the <ul>
   pageDiv.appendChild(containerDiv);
@@ -66,38 +54,34 @@ function createLinks(list) {
     let li = document.createElement('li');
     let link = document.createElement('a');
     
-    // put <li> into <ul>
+    // put <li> into <ul>, then <a> into <li>
     ul.appendChild(li);
-      
-    //put <a> tags in <li>
     li.appendChild(link);
+      
+    // add attributes for <a> tags (according to /examples/example-meets.html)
     link.href = '#';
     link.textContent = i;
 
-      
-    // when user clicks a page #[i], it shows only the names for that page and hides the others
-    link.addEventListener('click', (e) => {
-      showPage(list, i);
-    })
-
-    //highlights the current page
+    // need a condition to assign 'active' attribute to the current page
     if (link.textContent == 1) {
       link.className = 'active'
     };
 
+   
+      
     link.addEventListener('click', (e) => {
+      // when user clicks link, it shows only the names for that page and hides the rest
+      showPage(list, i);
+    
+      const inactiveLinks = document.querySelectorAll('a');
         
-      //targets current page that is active
-      const activePage = e.target.textContent;
-        
-      const a = document.querySelectorAll('a');
-        
-      // displays active page
-      showPage(list, activePage);
+      // target and display 'active' page
+      const activeLink = e.target.textContent;
+      showPage(list, activeLink);
         
       // loop thru the rest of the elements with <a> tags and mark them as inactive
-      for (let i = 0; i < a.length; i++) {
-        a[i].className = 'inactive';
+      for (let i = 0; i < inactiveLinks.length; i++) {
+        inactiveLinks[i].className = 'inactive';
       }
       // ...except for the one <a> that is active
       e.target.className = 'active';
@@ -105,16 +89,13 @@ function createLinks(list) {
       
   } //end for loop thru pages
 
-};
-//call createLInks() function to assemble pagination
-createLinks(studentList);
+}; // end of createLinks() funct
 
 
 
+// EXCEEDS SECTION
 
-// EXCEEDS Section
-
-// create search-related DOM elements, and assign them classes that match the CSS
+// create search-related elements and assign them classes that match the CSS
 const searchDiv = document.createElement('div');
 searchDiv.className = ('student-search');
 
@@ -124,7 +105,7 @@ input.placeholder = 'Search for students...';
 const button = document.createElement('button');
 button.textContent = 'Search';
 
-// reference where main header is in html
+// reference main header is in html so we can append search bar to it
 const header = document.querySelector('.page-header');
 
 // define structure of search section by appending related elements
@@ -141,17 +122,17 @@ noResultsFound.style.display = 'none'; // hide no results found message until ne
 // reference where student names are being held in html (will need for search function)
 const studentName = document.getElementsByTagName('h3');
 
-// define search functionality with search function that hides names that were NOT searched for
+// define search functionality: this will hides names that were NOT searched for
 function search() {
     
-      // need here again so that it doesn't show up until search is complete
+      // need here (again) so that it doesn't show up until search is complete
       noResultsFound.style.display = 'none';
 
       // define a new array that holds the names that match what the user inputs in the search bar
       const searchList = [];
     
       // loop through ALL students while searching
-      for (let x = 0; x < studentList.length; x++) {
+      for (let x=0; x<studentList.length; x+=1) {
         
         // refactoring: define separate user input var to make if/else more readable
         let userInput = studentName[x].innerHTML;
@@ -173,24 +154,23 @@ function search() {
         noResultsFound.style.display = '';
       }
 
-      // call previous functions to assemble search fully
-      reset(); // defined earlier
+      // AFTER A SEARCH: call previous functions to assemble search from the beginning
+      containerDiv.innerHTML = ''; 
       showPage(searchList, 1);
       createLinks(searchList);
     
 }; // end of search() function
 //search();
 
-
 // add 'keyup' event listeners, so that code searches in real-time
 input.addEventListener('keyup', (e) => {
-        e.preventDefault();
+        e.preventDefault(); // refactoring: add prevent default
         // IF there is something in the search input, search through names
         if (input.value != '') {
            search();
         } else {
            // ELSE: reset to original display
-           reset();
+           containerDiv.innerHTML = '';
            showPage(studentList, 1);
            createLinks(studentList)
         }
@@ -198,8 +178,17 @@ input.addEventListener('keyup', (e) => {
 
 // add 'click' listener so the user can also click search button when they are done typing
 button.addEventListener('click', (e) => {
-      e.preventDefault();
+      e.preventDefault(); // refactoring: add prevent default
       search();
 });
+
+
+
+
+// CALL ALL FUNCTIONS
+// call showPage() with page=1 so it is the default page
+//call createLInks() function to assemble pagination
+showPage(studentList, 1); 
+createLinks(studentList);
 
 
