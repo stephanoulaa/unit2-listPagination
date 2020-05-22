@@ -18,11 +18,11 @@ function showPage(list, page) {
 
   for (let i = 0; i < list.length; i++) {
       if (i >= firstIndex && i < lastIndex) {
-        list[i].style.display = ('');
+        list[i].style.display = '';
       }
       else {
         //hide these elements with CSS dynamically
-        list[i].style.display = ('none');
+        list[i].style.display = 'none';
       }
   }
 };
@@ -37,6 +37,7 @@ containerDiv.className = ('pagination');
 
 
 // reset() function bellow borrowed from GitHub user brunomarchir
+// github.com/brunomarchir/List-Pagination-And-Filtering/
 // "function to reset pagination for a different list"
 const reset = () => {
    containerDiv.innerHTML = '';
@@ -135,7 +136,7 @@ searchDiv.appendChild(button);
 noResultsFound = document.createElement('h2');
 noResultsFound.textContent = 'No results found...try searching again!';
 pageDiv.appendChild(noResultsFound); // append to the page where results WOULD be
-noResultsFound.style.display = ('none'); // hide no results found message until needed
+noResultsFound.style.display = 'none'; // hide no results found message until needed
 
 // reference where student names are being held in html (will need for search function)
 const studentName = document.getElementsByTagName('h3');
@@ -144,7 +145,7 @@ const studentName = document.getElementsByTagName('h3');
 function search() {
     
       // need here again so that it doesn't show up until search is complete
-      noResultsFound.style.display = ('none');
+      noResultsFound.style.display = 'none';
 
       // define a new array that holds the names that match what the user inputs in the search bar
       const searchList = [];
@@ -157,19 +158,19 @@ function search() {
           
         if (userInput.includes(input.value)) {
           // SHOW these names
-          studentList[x].style.display = ('')
+          studentList[x].style.display = ''
           // push ENTIRE student info (hence calling grandparent of studentName) to searched list array
           searchList.push(studentName[x].parentNode.parentNode);
         }
           else {
             // HIDE names if it's not what the user searched for
-            studentList[x].style.display = ('none');
+            studentList[x].style.display = 'none';
           }
       }
 
       //show "no results" message if results array remains empty
       if (searchList.length == 0) {
-        noResultsFound.style.display = ('');
+        noResultsFound.style.display = '';
       }
 
       // call previous functions to assemble search fully
